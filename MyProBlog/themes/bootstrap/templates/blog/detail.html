@@ -1,0 +1,115 @@
+{% extends 'blog/home.html' %}
+{% load comment_block %}
+{% load static %}
+
+{% block title %}
+    {{ article.title }}
+{% endblock %}
+
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'highlight/styles/default.css' %}">
+    <script src="{% static 'highlight/highlight.pack.js' %}"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+{% endblock %}
+
+
+{% block blog-main %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">首页</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'category-list' article.category.id %}">{{ article.category.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">正文</li>
+        </ol>
+    </nav>
+
+
+    <div class="detail">
+        {% if article %}
+            <h2 class="under_line"><span>{{ article.title }}</span></h2>
+            <hr>
+            <div class="info">
+                <span>作者：{{ article.owner.username }}</span> |
+                <span class="card-link">标签:
+                    {% for tag in article.tag.all %}
+                        <a href="{% url 'tag-list' tag.id %}">{{ tag.name }}</a>
+                    {% endfor %}
+            </span> |
+                <span>发布：{{ article.created_time }}</span> |
+                <span>阅读量：{{ article.pv }}</span>
+            </div>
+            <br>
+            <div id="article" class="content">
+                <p>{{ article.content_html|safe }}</p>
+            </div>
+
+
+        {% endif %}
+{#        request.path为comment_block的参数#}
+        {% comment_block request.path %}
+
+    </div>
+
+
+
+    <div class="blog-post">
+
+        {% if article_list %}
+            {% for article in article_list %}
+                <div class="shadow-sm p-1 mb-1 bg-white rounded">
+                    <h4><a class="text-dark" href="{% url 'article-detail' article.id %}">
+                        {{ article.title }}
+                    </a></h4>
+                    <hr>
+                    <div class="info">
+
+                        分类：<a href="{% url 'category-list' article.category.id %}" title="查看  中的全部文章"
+                              rel="category tag">{{ article.category }}</a>
+
+                        | 标签：
+
+                        {% for tag in article.tag.all %}
+                            <a href="{% url 'tag-list' tag.id %}" rel="tag">{{ tag.name }}</a>
+                        {% endfor %}
+                        | 发布：{{ article.created_time }}
+                        | 阅读量: {{ article.pv }}
+                    </div>
+                    <br>
+                    <p>
+                        求大神给一个学习 Python 的思路，我希望大神能给我讲解入门要重点学习那一块，不然我觉得我要失败了
+                    </p>
+                </div>
+
+            {% endfor %}
+        {% else %}
+            <h4>未查到与<span style="color: #007bff;">{{ keyword }}</span>有关的文章</h4>
+        {% endif %}
+        <nav aria-label="...">
+            <ul class="pagination">
+                {% if page_obj %}
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page.obj.previous_page_number }}">上一页</a>
+                        </li>
+                    {% endif %}
+                    <a class="page-link" href="#">{{ page_obj.number }} <span class="sr-only">(current)</span></a>
+
+                    Page {{ page_obj.number }} of {{ paginator.num_pages }}.
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">下一页</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+        </nav>
+
+    </div>
+
+    <nav class="blog-pagination">
+        <a class="btn btn-outline-primary" href="#"><span class="custom-vertical">较</span></a>
+        <a class="btn btn-outline-secondary disabled" href="#" tabindex="-1" aria-disabled="true"><span
+                class="custom-vertical">新</span></a>
+    </nav>
+
+
+{% endblock %}

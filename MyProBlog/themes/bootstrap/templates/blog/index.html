@@ -1,0 +1,114 @@
+{% extends 'blog/home.html' %}
+
+{% block show-item %}
+    <div class="row mb-2">
+        <div class="col-md-6">
+            <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <strong class="d-inline-block mb-2 text-primary"><span class="custom-vertical">世界</span></strong>
+                    <h3 class="mb-0"><span class="custom-vertical">精选文章</span></h3>
+                    <div class="mb-1 text-muted"><span class="custom-vertical">十一月12</span></div>
+                    <p class="card-text mb-auto"><span class="custom-vertical">这是一种较宽的卡片，带有下面的支持文字，可以自然地引入其他内容。</span>
+                    </p>
+                    <a href="#" class="stretched-link"><span class="custom-vertical">继续阅读</span></a>
+                </div>
+                <div class="col-auto d-none d-lg-block">
+                    <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg"
+                         preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="占位符：缩略图"><title>
+                        Placeholder</title>
+                        <rect width="100%" height="100%" fill="#55595c"></rect>
+                        <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <strong class="d-inline-block mb-2 text-success"><span class="custom-vertical">设计</span></strong>
+                    <h3 class="mb-0"><span class="custom-vertical">帖子标题</span></h3>
+                    <div class="mb-1 text-muted"><span class="custom-vertical">十一月11</span></div>
+                    <p class="mb-auto"><span class="custom-vertical">这是一种较宽的卡片，带有下面的支持文字，可以自然地引入其他内容。</span></p>
+                    <a href="#" class="stretched-link"><span class="custom-vertical">继续阅读</span></a>
+                </div>
+                <div class="col-auto d-none d-lg-block">
+                    <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg"
+                         preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="占位符：缩略图"><title>
+                        Placeholder</title>
+                        <rect width="100%" height="100%" fill="#55595c"></rect>
+                        <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block article-top %}
+    <h3 class="pb-4 mb-4 font-italic border-bottom"><span class="custom-vertical">置顶区</span></h3>
+
+{% endblock %}
+
+{% block blog-main %}
+    <div class="blog-post">
+
+        {% if article_list %}
+            {% for article in article_list %}
+                <div class="shadow-sm p-1 mb-1 bg-white rounded">
+                    <h4><a class="text-dark" href="{% url 'article-detail' article.id %}">
+                        {{ article.title }}
+                    </a></h4>
+                    <hr>
+                    <div class="info">
+
+                        分类：<a href="{% url 'category-list' article.category.id %}" title="查看  中的全部文章"
+                              rel="category tag">{{ article.category }}</a>
+
+                        | 标签：
+
+                        {% for tag in article.tag.all %}
+                            <a href="{% url 'tag-list' tag.id %}" rel="tag">{{ tag.name }}</a>
+                        {% endfor %}
+                        | 发布：{{ article.created_time }}
+                        | 阅读量: {{ article.pv }}
+                    </div>
+                    <br>
+                    <p>
+                        求大神给一个学习 Python 的思路，我希望大神能给我讲解入门要重点学习那一块，不然我觉得我要失败了
+                    </p>
+                </div>
+
+            {% endfor %}
+        {% else %}
+            <h4>未查到与<span style="color: #007bff;">{{ keyword }}</span>有关的文章</h4>
+        {% endif %}
+        <nav aria-label="...">
+            <ul class="pagination">
+                {% if page_obj %}
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page.obj.previous_page_number }}">上一页</a>
+                        </li>
+                    {% endif %}
+                    <a class="page-link" href="#">{{ page_obj.number }} <span class="sr-only">(current)</span></a>
+
+{#                    Page {{ page_obj.number }} of {{ paginator.num_pages }}.#}
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">下一页</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+        </nav>
+
+    </div>
+
+    <nav class="blog-pagination">
+        <a class="btn btn-outline-primary" href="#"><span class="custom-vertical">较</span></a>
+        <a class="btn btn-outline-secondary disabled" href="#" tabindex="-1" aria-disabled="true"><span
+                class="custom-vertical">新</span></a>
+    </nav>
+
+
+{% endblock %}
