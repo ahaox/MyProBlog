@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'simpleui',
+    'simpleui',  # 第三方后台
     'MyProBlog',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -44,7 +44,20 @@ INSTALLED_APPS = [
     'Blog',
     'Config',
     'Comment',
+    'ckeditor',  # 第三方富文本工具
 ]
+
+
+# 富文本工具
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': 800,
+        'tabSpaces': 4,
+        'extraPlugins': 'codesnippet',  # 配置代码插件
+    },
+}
 
 MIDDLEWARE = [
     'Blog.middleware.user_id.UserIDMiddleware',  # 生产唯一id添加到cookie中

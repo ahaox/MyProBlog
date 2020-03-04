@@ -3,7 +3,7 @@ import mistune
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.functional import cached_property
-
+ 
 
 # Create your models here.
 class Category(models.Model):
@@ -40,7 +40,6 @@ class Category(models.Model):
                 nav_categories.append(cate)
             else:
                 normal_categories.append(cate)
-        print(nav_categories)
         return {
             'navs': nav_categories,  # 导航栏
             'categories': normal_categories,  # 普通分类
