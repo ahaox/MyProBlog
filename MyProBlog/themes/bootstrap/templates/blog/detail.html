@@ -44,7 +44,7 @@
 
 
         {% endif %}
-{#        request.path为comment_block的参数#}
+        {# request.path为comment_block的参数 #}
         {% comment_block request.path %}
 
     </div>
@@ -52,7 +52,6 @@
 
 
     <div class="blog-post">
-
         {% if article_list %}
             {% for article in article_list %}
                 <div class="shadow-sm p-1 mb-1 bg-white rounded">
@@ -104,12 +103,5 @@
         </nav>
 
     </div>
-
-    <nav class="blog-pagination">
-        <a class="btn btn-outline-primary" href="#"><span class="custom-vertical">较</span></a>
-        <a class="btn btn-outline-secondary disabled" href="#" tabindex="-1" aria-disabled="true"><span
-                class="custom-vertical">新</span></a>
-    </nav>
-
 
 {% endblock %}

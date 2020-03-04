@@ -48,10 +48,6 @@ class SideBar(models.Model):
     DISPLAY_LATEST = 2
     DISPLAY_HOT = 3
     DISPLAY_COMMENT = 4
-    DISPLAY_SERIES = 5
-    DISPLAY_CLOCK = 6
-
-
 
     SIDE_TYPE = (
 
@@ -59,13 +55,11 @@ class SideBar(models.Model):
         (DISPLAY_LATEST, '最新文章'),
         (DISPLAY_HOT, '最热文章'),
         (DISPLAY_COMMENT, '最近评论'),
-        # (DISPLAY_SERIES, '系列文章'),
-        # (DISPLAY_CLOCK, '点击排行')
     )
 
     title = models.CharField(max_length=50, verbose_name="标题")
     display_type = models.PositiveIntegerField(choices=SIDE_TYPE, default=DISPLAY_HTML, verbose_name="展示类型")
-    content = models.CharField(max_length=500,  blank=True, verbose_name="内容", help_text="如果设置的不是 HTML 类型，可以为空")
+    content = models.TextField(max_length=500,  blank=True, verbose_name="内容", help_text="如果设置的不是 HTML 类型，可以为空")
     status = models.PositiveIntegerField(choices=STATUS_ITEMS, default=STATUS_SHOW, verbose_name="状态")
     owner = models.ForeignKey(User, verbose_name="作者", on_delete=models.CASCADE)
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
@@ -95,12 +89,12 @@ class SideBar(models.Model):
             result = self.content
         elif self.display_type == self.DISPLAY_LATEST:  # 最新文章
             context = {
-                'articles': Article.latest_articles()[:10]
+                'articles': Article.latest_articles()[:15]  # 展示前15条数据
             }
             result = render_to_string('config/blocks/sidebar_articles.html', context)
         elif self.display_type == self.DISPLAY_HOT:  # 最热文章
             context = {
-                'articles': Article.hot_article()[:10]
+                'articles': Article.hot_article()[:15]
             }
             result = render_to_string('config/blocks/sidebar_articles.html', context)
         elif self.display_type == self.DISPLAY_COMMENT:  # 最近评论

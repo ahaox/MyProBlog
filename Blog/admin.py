@@ -13,7 +13,6 @@ admin.site.site_header = "MyProBlog"
 admin.site.site_title = 'MyProBLog'
 
 
-
 # Register your models here.
 @admin.register(Category)
 class CategoryAdmin(BaseOwnerAdmin):

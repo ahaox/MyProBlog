@@ -3,7 +3,6 @@
 <html lang="zh-CN" class="translated-ltr">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
@@ -60,31 +59,38 @@
         <br class="bd-placeholder-img">
         <div class="row flex-nowrap justify-content-between align-items-center">
             <div class="col-8 text-sm-left">
-                <a>关注Python、Django、Vim、Linux、Web开发、团队管理和互联网--Life is short, we study Python.</a>
+                <a>一个刚学习Django的玩家．--ahao</a>
 
             </div>
             <div class="col-4 d-flex justify-content-end align-items-center">
-                <a class="text-muted" href="#" aria-label="搜索">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
-                         stroke-linecap="round"
-                         stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"
-                         focusable="false">
-                        <title>Search</title>
-                        <circle cx="10.5" cy="10.5" r="7.5"></circle>
-                        <path d="M21 21l-5.2-5.2"></path>
-                    </svg>
-                </a>
-                <a class="btn btn-sm btn-outline-secondary" href="#"><span class="custom-vertical">注册</span></a>
+                <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">搜索</button>
+                </form>
+                {#                <a class="text-muted" href="#" aria-label="搜索">#}
+                {#                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"#}
+                {#                         stroke-linecap="round"#}
+                {#                         stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"#}
+                {#                         focusable="false">#}
+                {#                        <title>Search</title>#}
+                {#                        <circle cx="10.5" cy="10.5" r="7.5"></circle>#}
+                {#                        <path d="M21 21l-5.2-5.2"></path>#}
+                {#                    </svg>#}
+                {#                </a>#}
+                {#                <a class="btn btn-sm btn-outline-secondary" href="#"><span class="custom-vertical">注册</span></a>#}
             </div>
         </div>
     </header>
 
     <div class="nav-scroller py-1 mb-2">
-        <nav class="nav d-flex">
+        <nav class="nav d-flex nav-tabs" id="nav-tab" role="tablist">
             {% for cate in navs %}
-                <a class="p-2 text-muted" href="{% url 'category-list' cate.id %}">
-                    <span class="custom-vertical">{{ cate.name }}</span>
+
+                <a class="p-3 badge text-muted nav nav-pills nav-item nav-link" id="nav-home-tab" data-toggle="tab"
+                   role="tab" href="{% url 'category-list' cate.id %}">
+                    <span class="custom-vertical" style="font-size: 17px;">{{ cate.name }}</span>
                 </a>
+
             {% endfor %}
         </nav>
     </div>
@@ -92,9 +98,9 @@
     <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark">
         <div class="col-md-6 px-0">
             <h1 class="display-4 font-italic"><span class="custom-vertical">MyProBlog基于Django的多人博客系统</span></h1>
-            <p class="lead my-3"><span class="custom-vertical">基于Django的多人博客系统</span></p>
-            <p class="lead mb-0"><a href="#" class="text-white font-weight-bold"><span
-                    class="custom-vertical">继续阅读...</span></a></p>
+            <p class="lead my-3"><span class="custom-vertical">基于Django的个人博客系统</span></p>
+            {#            <p class="lead mb-0"><a href="#" class="text-white font-weight-bold"><span#}
+            {#                    class="custom-vertical">继续阅读...</span></a></p>#}
         </div>
     </div>
 
@@ -121,28 +127,38 @@
         <aside class="col-md-4 blog-sidebar">
             <div class="p-4 mb-3 bg-light rounded">
                 <h4 class="font-italic"><span class="custom-vertical">关于</span></h4>
-                <p class="mb-0">
-                    <span class="custom-vertical">Etiam porta sem malesuada magna mollis euismod Cras mattis
-                        consectetur purus坐在发酵罐中。
-                        Aenean lacinia bibendum nulla sed consectetur。
-                    </span>
+                <p class="mb-0"><span class="custom-vertical">网名：ahao </span></p><br>
+                <p>在校大学生，初学Django，撘建本博客以便学习交流.</p>
+                <p>
+                    <svg id="i-github" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="32" height="32">
+                        <path stroke-width="0" fill="currentColor"
+                              d="M32 0 C14 0 0 14 0 32 0 53 19 62 22 62 24 62 24 61 24 60 L24 55 C17 57 14 53 13 50 13 50 13 49 11 47 10 46 6 44 10 44 13 44 15 48 15 48 18 52 22 51 24 50 24 48 26 46 26 46 18 45 12 42 12 31 12 27 13 24 15 22 15 22 13 18 15 13 15 13 20 13 24 17 27 15 37 15 40 17 44 13 49 13 49 13 51 20 49 22 49 22 51 24 52 27 52 31 52 42 45 45 38 46 39 47 40 49 40 52 L40 60 C40 61 40 62 42 62 45 62 64 53 64 32 64 14 50 0 32 0 Z"/>
+                    </svg>
+                    <a href="https://github.com/ahaoao" class="custom-vertical">ahaoao</a>
                 </p>
             </div>
 
             {# 侧边栏 #}
             {% for sidebar in sidebars %}
-                <div class="p-4">
-                    <h4 class=""><span class="custom-vertical">{{ sidebar.title }}</span></h4>
-                    <ol class="list-unstyled mb-0">
-                        {# sidebar.content_html封装在Model层的数据 #}
-                        <li><a href="#"><span class="custom-vertical">{{ sidebar.content_html|safe }}</span></a></li>
-                    </ol>
-                </div>
                 <hr>
+                <div class="p-4">
+                    {% ifequal sidebar.display_type 1 %}
+                        {# 判断侧边栏是否是html类型 #}
+                        <h4 class=""><span class="custom-vertical">{{ sidebar.title }}</span></h4>
+                        {{ sidebar.content_html|safe }}
+                    {% else %}
+                        <h4 class=""><span class="custom-vertical">{{ sidebar.title }}</span></h4>
+                        {# sidebar.content_html封装在Model层的数据 #}
+                        <a href="#"><span class="custom-vertical">{{ sidebar.content_html|safe }}</span></a>
+                    {% endifequal %}
+                </div>
             {% endfor %}
 
         </aside><!-- /.blog-sidebar -->
     </div><!-- /.row -->
+    <div>
+        <p>其他分类:</p>
+    </div>
 </main><!-- /.container -->
 
 
@@ -150,22 +166,39 @@
     <div class="container">
         <div class="row">
             <div class="col-md-3">
+                <p>版权所有 © 2020 ahaoao.top</p>
+                <p>Power By <a href="#">ahao</a></p>
+                <p><a href="{% url 'sitemap' %}">网站地图</a></p>
             </div>
             <div class="col-md-5">
-                <p><span class="custom-vertical">博客的模板内置</span><a href="https://getbootstrap.com/"><span
-                        class="custom-vertical">引导</span></a><span
-                        class="custom-vertical">By</span><a href="https://twitter.com/mdo"><span
-                        class="custom-vertical">@ahao</span></a><span class="custom-vertical">。</span></p>
+                <p>基于Django2.2+Python3.6.5+uwgsi+nginx构建</p>
+                <p>博客部署在<a href="#">阿里云</a></p>
+                <p>当前在线人数: </p>
                 <p><a href="#"><span class="custom-vertical">回到顶部</span></a></p>
+
+
+                <br>
+                <div style="width:300px;margin:0 auto; padding:20px 0;">
+                    <p>网站备案信息区</p>
+                </div>
+
 
             </div>
             <div class="col-md-3">
-
+                <ul class="text-left">
+                    <li><a href="{% url 'links-list' %}">友情链接</a></li>
+                    <li><a href="#">在线API</a></li>
+                    <li><a href="#">关于博主</a></li>
+                </ul>
             </div>
-
         </div>
     </div>
-
 </footer>
+
+<script src="https://kit.fontawesome.com/40f2d1ca67.js" crossorigin="anonymous"></script>
+
+{% block extra_script %}
+
+{% endblock %}
 </body>
 </html>
