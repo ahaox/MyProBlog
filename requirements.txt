@@ -4,6 +4,8 @@ chardet==3.0.4
 Cython==0.29.15
 distlib==0.3.0
 Django==2.2
+django-ckeditor==5.9.0
+django-js-asset==1.2.2
 django-simpleui==3.9
 filelock==3.0.12
 get==2019.4.13
