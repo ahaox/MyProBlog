@@ -48,9 +48,6 @@
         {% comment_block request.path %}
 
     </div>
-
-
-
     <div class="blog-post">
         {% if article_list %}
             {% for article in article_list %}
@@ -74,7 +71,7 @@
                     </div>
                     <br>
                     <p>
-                        求大神给一个学习 Python 的思路，我希望大神能给我讲解入门要重点学习那一块，不然我觉得我要失败了
+                        {{ article.desc }}
                     </p>
                 </div>
 

@@ -45,8 +45,15 @@ INSTALLED_APPS = [
     'Config',
     'Comment',
     'ckeditor',  # 第三方富文本工具
+    'rest_framework',  # RESTful接口开发
 ]
 
+# rest_framework文档
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 5,
+}
 
 # 富文本工具
 CKEDITOR_CONFIGS = {
@@ -59,7 +66,7 @@ CKEDITOR_CONFIGS = {
     },
 }
 
-MIDDLEWARE = [
+MIDDLEWARE = [  # 中间件，作用范围：全局，　每次访问都要走中间件，然后到url
     'Blog.middleware.user_id.UserIDMiddleware',  # 生产唯一id添加到cookie中
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -150,4 +157,6 @@ THEME = 'bootstrap'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'themes', THEME, 'static'),
 ]
+
+
 

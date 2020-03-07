@@ -15,15 +15,31 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.sitemaps import views as sitemap_views
-from django.urls import path
+from django.urls import path, include
+from django.views.generic.base import RedirectView
+from rest_framework.routers import DefaultRouter
+from rest_framework.documentation import include_docs_urls
+
+from .settings import develop
 
 
 # from .custom_site import custom_site
-from Blog.views import IndexView, CategoryView, TagView, ArticleDetailView, SearchView, AuthorView, HomeView
-from Config.views import LinkListView
-from Comment.views import CommentView
+from Blog.apis import ArticleViewSet, CategoryViewSet, TagViewSet
 from Blog.rss import LatestArticleFeed
 from Blog.sitemap import ArticleSitemap
+from Blog.views import (
+    IndexView, CategoryView, TagView,
+    ArticleDetailView, SearchView, AuthorView,
+    getArticle,
+)
+from Config.views import LinkListView
+from Comment.views import CommentView
+
+
+router = DefaultRouter()
+router.register('article', ArticleViewSet, basename='api-article')
+router.register('category', CategoryViewSet, basename='api-category')
+router.register('tag', TagViewSet, basename='api-tag')
 
 
 urlpatterns = [
@@ -37,7 +53,16 @@ urlpatterns = [
     path('comment/', CommentView.as_view(), name='comment'),
     path('rss.html/', LatestArticleFeed(), name='rss'),
     path('sitemap.xml/', sitemap_views.sitemap, {'sitemaps': {'article': ArticleSitemap}}, name='sitemap'),
-    # path('super_admin', admin.site.urls, name="super-admin"),
     path('admin/', admin.site.urls, name="admin"),
-    path('1', HomeView.as_view(), name="home_view"),
+    path('api/', include(router.urls)),
+    path('api/docs/', include_docs_urls(title='MyProBlog apis'), name='api-doc'),
+    path('favicon.ico', RedirectView.as_view(url='static/css/ing/favicon.ico')),
+    path('get', getArticle),
+
 ]
+
+if develop.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__', include(debug_toolbar.urls)),
+    ] + urlpatterns
