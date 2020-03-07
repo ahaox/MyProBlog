@@ -81,16 +81,18 @@
             </div>
         </div>
     </header>
-
+    {# 导航栏 #}
     <div class="nav-scroller py-1 mb-2">
         <nav class="nav d-flex nav-tabs" id="nav-tab" role="tablist">
+            <a class="p-3 badge text-muted nav nav-pills nav-item nav-link" id="nav-home-tab" data-toggle="tab"
+               role="tab" href="{% url 'index' %}">
+                <span class="custom-vertical" style="font-size: 17px;">首页</span>
+            </a>
             {% for cate in navs %}
-
                 <a class="p-3 badge text-muted nav nav-pills nav-item nav-link" id="nav-home-tab" data-toggle="tab"
                    role="tab" href="{% url 'category-list' cate.id %}">
                     <span class="custom-vertical" style="font-size: 17px;">{{ cate.name }}</span>
                 </a>
-
             {% endfor %}
         </nav>
     </div>

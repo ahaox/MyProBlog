@@ -1,3 +1,6 @@
+"""
+增加uid完成阅读统计功能
+"""
 import uuid
 
 USER_KEY = 'uid'
@@ -6,6 +9,8 @@ TEN_YEARS = 60 * 60 * 24 * 365 * 10
 
 class UserIDMiddleware:
     """
+    中间件
+
     将该类配置在Django settings的MIDDLEWARE中。传递request作为参数
     请求到达该类后的逻辑：先生成uid，然后把uid赋值给request对象，最后返回response时，我们设置cookie，并且设置为httponly(只在服务端能访问)
     这样用户再次请求时，就会带上同样的uid了

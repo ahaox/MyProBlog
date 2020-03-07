@@ -1,7 +1,7 @@
 from datetime import date
 
 from django.db.models import Q, F
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, HttpResponse
 from django.views.generic import ListView, DetailView, TemplateView
 from django.core.cache import cache
 
@@ -132,6 +132,19 @@ class AuthorView(IndexView):
         return queryset.filter(owner_id=author_id)
 
 
-class HomeView(TemplateView):
-    template_name = "blog/home.html"
+def getArticle(request):
+    import coreapi
+
+    # Initialize a client & load the schema document
+    client = coreapi.Client()
+    schema = client.get("http://127.0.0.1:8000/api/docs/")
+
+    # Interact with the API endpoint
+    action = ["article", "read"]
+    params = {
+        "id": 1,
+    }
+    result = client.action(schema, action, params=params)
+    print(result)
+    return HttpResponse(request, "hello")
 
