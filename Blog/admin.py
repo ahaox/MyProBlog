@@ -6,7 +6,7 @@ from django.contrib.admin.models import LogEntry
 from .models import Category, Tag, Article
 from .adminforms import ArticleAdminForm
 # from MyProBlog.custom_site import custom_site
-from MyProBlog.base_admin import BaseOwnerAdmin
+from MyProBlog.base_admin import BaseOwnerAdmin  # 抽象的基类
 
 
 admin.site.site_header = "MyProBlog"
@@ -22,11 +22,6 @@ class CategoryAdmin(BaseOwnerAdmin):
     # 表单页展示的数据
     fields = ('name', 'status', 'is_nav')
 
-    # # 重写save_model获取当前登陆的数据
-    # def save_model(self, request, obj, form, change):
-    #     obj.owner = request.user  # 设置owner为当前用户
-    #     return super(CategoryAdmin, self).save_model(request, obj, form, change)
-
     def article_count(self, obj):
         # 文章数量
         return obj.article_set.count()
@@ -39,10 +34,6 @@ class TagAdmin(BaseOwnerAdmin):
     """标签管理类"""
     list_display = ('name', 'status', 'created_time')
     fields = ('name', 'status')
-
-    # def save_model(self, request, obj, form, change):
-    #     obj.owner = request.user
-    #     return super(TagAdmin, self).save_model(request, obj, form, change)
 
 
 class CategoryOwnerFilter(admin.SimpleListFilter):
@@ -65,11 +56,12 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
 class ArticleAdmin(BaseOwnerAdmin):
     """文章管理类"""
     form = ArticleAdminForm
-
+    # 文章列表展示的字段
     list_display = ('title', 'category', 'status', 'owner', 'created_time', 'operator')
     list_display_links = []
+    # 文章列表只显示当前用户创建的分类(过滤器)
     list_filter = (CategoryOwnerFilter, )
-
+    # 搜索字段
     search_fields = ('title', 'category__name', )
 
     # 动作相关的配置，是否显示在顶部和底部
@@ -78,7 +70,7 @@ class ArticleAdmin(BaseOwnerAdmin):
 
     # 编辑页面
     save_on_top = True  # 将操作按钮同时显示在顶部
-    # fields = (
+    # fields = (  # 不折叠
     #     ('category', 'title'),
     #     'desc',
     #     'status',
