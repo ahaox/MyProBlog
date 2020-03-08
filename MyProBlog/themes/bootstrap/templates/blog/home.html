@@ -63,21 +63,10 @@
 
             </div>
             <div class="col-4 d-flex justify-content-end align-items-center">
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <form class="form-inline my-2 my-lg-0" action='/search/' method='GET'>
+                    <input class="form-control mr-sm-2"  type="search" name="keyword" placeholder="Search" aria-label="Search" value="{{ keyword }}">
                     <button class="btn btn-outline-success" type="submit">搜索</button>
                 </form>
-                {#                <a class="text-muted" href="#" aria-label="搜索">#}
-                {#                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"#}
-                {#                         stroke-linecap="round"#}
-                {#                         stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"#}
-                {#                         focusable="false">#}
-                {#                        <title>Search</title>#}
-                {#                        <circle cx="10.5" cy="10.5" r="7.5"></circle>#}
-                {#                        <path d="M21 21l-5.2-5.2"></path>#}
-                {#                    </svg>#}
-                {#                </a>#}
-                {#                <a class="btn btn-sm btn-outline-secondary" href="#"><span class="custom-vertical">注册</span></a>#}
             </div>
         </div>
     </header>
@@ -158,44 +147,25 @@
 
         </aside><!-- /.blog-sidebar -->
     </div><!-- /.row -->
-    <div>
-        <p>其他分类:</p>
+    {% if not article %}{# 文章详细页不出现其他分类 #}
+        <div>
+            <p>其他分类:</p>
+            <ul class="nav ">
+                {% for category in categories %}
+                <li class="nav-item">
+                    <a class="nav-link active text-secondary" href="#">{{ category }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    <div class="row" style="height: 10em;">
+
     </div>
 </main><!-- /.container -->
 
 
-<footer class="blog-footer">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3">
-                <p>版权所有 © 2020 ahaoao.top</p>
-                <p>Power By <a href="#">ahao</a></p>
-                <p><a href="{% url 'sitemap' %}">网站地图</a></p>
-            </div>
-            <div class="col-md-5">
-                <p>基于Django2.2+Python3.6.5+uwgsi+nginx构建</p>
-                <p>博客部署在<a href="#">阿里云</a></p>
-                <p>当前在线人数: </p>
-                <p><a href="#"><span class="custom-vertical">回到顶部</span></a></p>
-
-
-                <br>
-                <div style="width:300px;margin:0 auto; padding:20px 0;">
-                    <p>网站备案信息区</p>
-                </div>
-
-
-            </div>
-            <div class="col-md-3">
-                <ul class="text-left">
-                    <li><a href="{% url 'links-list' %}">友情链接</a></li>
-                    <li><a href="#">在线API</a></li>
-                    <li><a href="#">关于博主</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</footer>
+{% include 'includes/footer.html' %}
 
 <script src="https://kit.fontawesome.com/40f2d1ca67.js" crossorigin="anonymous"></script>
 

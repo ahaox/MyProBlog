@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.contrib.admin.models import LogEntry
 
-from .models import Category, Tag, Article
+from .models import Category, Tag, Article, ToppedArticles
 from .adminforms import ArticleAdminForm
 # from MyProBlog.custom_site import custom_site
 from MyProBlog.base_admin import BaseOwnerAdmin  # 抽象的基类
@@ -87,7 +87,7 @@ class ArticleAdmin(BaseOwnerAdmin):
         }),
         ('额外信息', {
             'classes': ('collapse', ),
-            'fields': ('tag', ),
+            'fields': ('tag', 'is_top'),
         })
     )
 
@@ -120,6 +120,12 @@ class ArticleAdmin(BaseOwnerAdmin):
 class LogEntryAdmin(admin.ModelAdmin):
     """日志记录"""
     list_display = ('object_repr', 'object_id', 'action_flag', 'user', 'change_message')
+
+
+@admin.register(ToppedArticles)
+class TopArticleAdmin(admin.ModelAdmin):
+    list_display = ('top_area', 'article', 'created_time', 'topped_expired_time')
+
 
 
 

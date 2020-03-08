@@ -89,12 +89,13 @@ class SideBar(models.Model):
             result = self.content
         elif self.display_type == self.DISPLAY_LATEST:  # 最新文章
             context = {
-                'articles': Article.latest_articles()[:15]  # 展示前15条数据
+                # with_related=False 侧边栏不需要Owner和Category
+                'articles': Article.latest_articles(with_related=False)[:15]  # 展示前15条数据
             }
             result = render_to_string('config/blocks/sidebar_articles.html', context)
         elif self.display_type == self.DISPLAY_HOT:  # 最热文章
             context = {
-                'articles': Article.hot_article()[:15]
+                'articles': Article.hot_article(with_related=False)[:15]
             }
             result = render_to_string('config/blocks/sidebar_articles.html', context)
         elif self.display_type == self.DISPLAY_COMMENT:  # 最近评论

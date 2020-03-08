@@ -21,8 +21,6 @@
             <li class="breadcrumb-item active" aria-current="page">正文</li>
         </ol>
     </nav>
-
-
     <div class="detail">
         {% if article %}
             <h2 class="under_line"><span>{{ article.title }}</span></h2>
@@ -41,64 +39,10 @@
             <div id="article" class="content">
                 <p>{{ article.content_html|safe }}</p>
             </div>
-
-
         {% endif %}
         {# request.path为comment_block的参数 #}
-        {% comment_block request.path %}
-
-    </div>
-    <div class="blog-post">
-        {% if article_list %}
-            {% for article in article_list %}
-                <div class="shadow-sm p-1 mb-1 bg-white rounded">
-                    <h4><a class="text-dark" href="{% url 'article-detail' article.id %}">
-                        {{ article.title }}
-                    </a></h4>
-                    <hr>
-                    <div class="info">
-
-                        分类：<a href="{% url 'category-list' article.category.id %}" title="查看  中的全部文章"
-                              rel="category tag">{{ article.category }}</a>
-
-                        | 标签：
-
-                        {% for tag in article.tag.all %}
-                            <a href="{% url 'tag-list' tag.id %}" rel="tag">{{ tag.name }}</a>
-                        {% endfor %}
-                        | 发布：{{ article.created_time }}
-                        | 阅读量: {{ article.pv }}
-                    </div>
-                    <br>
-                    <p>
-                        {{ article.desc }}
-                    </p>
-                </div>
-
-            {% endfor %}
-        {% else %}
-            <h4>未查到与<span style="color: #007bff;">{{ keyword }}</span>有关的文章</h4>
-        {% endif %}
-        <nav aria-label="...">
-            <ul class="pagination">
-                {% if page_obj %}
-                    {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page.obj.previous_page_number }}">上一页</a>
-                        </li>
-                    {% endif %}
-                    <a class="page-link" href="#">{{ page_obj.number }} <span class="sr-only">(current)</span></a>
-
-                    Page {{ page_obj.number }} of {{ paginator.num_pages }}.
-                    {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">下一页</a>
-                        </li>
-                    {% endif %}
-                {% endif %}
-            </ul>
-        </nav>
-
+{# 评论不启用 #}
+{#   {% comment_block request.path %}#}
     </div>
 
 {% endblock %}
