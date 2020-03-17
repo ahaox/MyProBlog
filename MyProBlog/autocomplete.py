@@ -1,6 +1,9 @@
+"""自动补全插件"""
+
+
 from dal import autocomplete
 
-from Blog.models import Category, Tag
+from Blog.models import Category, Tag, Article
 
 
 class CategoryAutocomplete(autocomplete.Select2QuerySetView):
@@ -12,6 +15,7 @@ class CategoryAutocomplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             qs = qs.filter(name__istartswith=self.q)
+            print(qs)
         return qs
 
 

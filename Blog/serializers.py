@@ -1,5 +1,5 @@
 """
-序列化数据
+序列化数据, restful api
 """
 from rest_framework import serializers, pagination
 from rest_framework.serializers import HyperlinkedModelSerializer

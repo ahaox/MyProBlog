@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = 'rlr(byrg4(6rm*35%owsmmu5jlm0=jsu5&mq5!v48!8v-c7hx-'
 DEBUG = False  # 默认关闭，开发时在开发配置文件中设置为True，线上发布时不能打开
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -44,8 +42,12 @@ INSTALLED_APPS = [
     'Blog',
     'Config',
     'Comment',
-    'ckeditor',  # 第三方富文本工具
+    'mdeditor',  # 第三方富文本工具
     'rest_framework',  # RESTful接口开发
+    # 搜索自动补全插件
+    'dal',
+    'dal_select2',
+    'pure_pagination',  # 分页插件
 ]
 
 # rest_framework文档
@@ -55,18 +57,10 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 5,
 }
 
-# 富文本工具
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'full',
-        'height': 300,
-        'width': 800,
-        'tabSpaces': 4,
-        'extraPlugins': 'codesnippet',  # 配置代码插件
-    },
-}
-
 MIDDLEWARE = [  # 中间件，作用范围：全局，　每次访问都要走中间件，然后到url
+    # 站点缓存 ， 注意必须在第一个位置
+    # 'django.middleware.cache.UpdateCacheMiddleware',
+    'Blog.middleware.online_ip.OnlineIpMiddleware',  # 统计ip的中间件
     'Blog.middleware.user_id.UserIDMiddleware',  # 生产唯一id添加到cookie中
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -75,6 +69,9 @@ MIDDLEWARE = [  # 中间件，作用范围：全局，　每次访问都要走�
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # 站点缓存, 注意必须在最后一个位置
+    # 'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'MyProBlog.urls'
@@ -97,7 +94,6 @@ TEMPLATES = [  # 指定模板
 
 WSGI_APPLICATION = 'MyProBlog.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -107,7 +103,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -127,7 +122,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -140,7 +134,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = False
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
@@ -158,5 +151,46 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'themes', THEME, 'static'),
 ]
 
+# 文件存放的位置
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# 增加图片水印
+DEFAULT_FILE_STORAGE = 'MyProBlog.storage.WatermarkStorage'
+
+# 富文本工具配置
+MDEDITOR_CONFIGS = {
+    'default': {
+        'width': '90%',  # 自定义编辑框宽度
+        'heigth': 1000,  # 自定义编辑框高度
+        'toolbar': ["undo", "redo", "|",
+                    "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase", "|",
+                    "h1", "h2", "h3", "h5", "h6", "|",
+                    "list-ul", "list-ol", "hr", "|",
+                    "link", "reference-link", "image", "code", "preformatted-text", "code-block", "table", "datetime",
+                    "emoji", "html-entities", "pagebreak", "goto-line", "|",
+                    "help", "info",
+                    "||", "preview", "watch", "fullscreen"],  # 自定义编辑框工具栏
+        'upload_image_formats': ["jpg", "jpeg", "gif", "png", "bmp", "webp"],  # 图片上传格式类型
+        'image_floder': 'editor',  # 图片保存文件夹名称
+        'theme': 'default',  # 编辑框主题 ，dark / default
+        'preview_theme': 'default',  # 预览区域主题， dark / default
+        'editor_theme': 'default',  # edit区域主题，pastel-on-dark / default
+        'toolbar_autofixed': True,  # 工具栏是否吸顶
+        'search_replace': True,  # 是否开启查找替换
+        'emoji': True,  # 是否开启表情功能
+        'tex': True,  # 是否开启 tex 图表功能
+        'flow_chart': True,  # 是否开启流程图功能
+        'sequence': True  # 是否开启序列图功能
+    },
+}
+
+PAGINATION_SETTINGS = {
+    'PAGE_RANGE_DISPLAYED': 4,  # 分页条当前页前后应该显示的总页数（两边均匀分布，因此要设置为偶数），
+    'MARGIN_PAGES_DISPLAYED': 2,  # 分页条开头和结尾显示的页数
+    'SHOW_FIRST_PAGE_WHEN_INVALID': True,  # 当请求了不存在页，显示第一页
+}
 
 
+# 设置session过期时间
+SESSION_COOKIE_AGE = 60 * 10  # 设置过期时间10分钟，默认为两周

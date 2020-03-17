@@ -1,8 +1,10 @@
 """内容相关的Model"""
 import mistune
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.db import models
 from django.utils.functional import cached_property
+from mdeditor.fields import MDTextField
  
 
 # Create your models here.
@@ -86,7 +88,7 @@ class Article(models.Model):
     )
     title = models.CharField(max_length=255, verbose_name="标题")
     desc = models.CharField(max_length=1024, blank=True, verbose_name="摘要")
-    content = models.TextField(verbose_name="正文", help_text="正文必须为 MarkDown 格式")
+    content = MDTextField(verbose_name="正文", help_text="正文必须为 MarkDown 格式")
     content_html = models.TextField(verbose_name="正文HTML代码", blank=True, editable=False)
     status = models.PositiveIntegerField(choices=STATUS_ITEMS, default=STATUS_NORMAL, verbose_name="状态")
     category = models.ForeignKey(Category, verbose_name="分类", on_delete=models.CASCADE)
@@ -94,7 +96,7 @@ class Article(models.Model):
     tag = models.ManyToManyField(Tag, verbose_name="标签")
     owner = models.ForeignKey(User, verbose_name="作者", on_delete=models.CASCADE)
     # 用pv和uv统计文章的访问量
-    pv = models.PositiveIntegerField(default=1)
+    pv = models.PositiveIntegerField(default=1, verbose_name="浏览量")
     uv = models.PositiveIntegerField(default=1)
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
@@ -102,15 +104,30 @@ class Article(models.Model):
         return self.title
 
     @classmethod
-    def hot_article(cls):
+    def hot_article(cls, with_related=True):
         """获取最热文章"""
-        return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv').only('title', 'id')
+        queryset = cache.get('hot_articles')
+        if not queryset:
+            queryset = cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv').only('title', 'id')
+            if with_related:
+                queryset = queryset.select_related('owner', 'category').prefetch_related('tag')
+            cache.set('hot_articles', queryset, 10 * 60)
+        return queryset
 
     @classmethod
     # 获取最新文章
-    def latest_articles(cls):
-        """将queryset获取封装到Model层"""
+    def latest_articles(cls, with_related=True):
+        """
+        将queryset获取封装到Model层
+        @:param with_related 控制返回的数据是否需要加上外键或者多对多的查询(N+1)
+
+        select_related: 解决外键N+1
+        prefetch_related: 解决多对多N+1
+
+        """
         queryset = cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-id')
+        if with_related:
+            queryset = queryset.select_related('owner', 'category').prefetch_related('tag')
         return queryset
 
     @cached_property
@@ -122,7 +139,7 @@ class Article(models.Model):
         return ','.join(self.tag.values_list('name', flat=True))
 
     def save(self, *args, **kwargs):
-        """"""
+        """保存为markdown格式"""
         self.content_html = mistune.markdown(self.content)
         super().save(*args, **kwargs)
 
@@ -130,3 +147,29 @@ class Article(models.Model):
         verbose_name_plural = "文章"
         # 通过id进行降序排列
         ordering = ['-id']
+
+
+class ToppedArticles(models.Model):
+    """顶置文章表"""
+    top_level = models.PositiveIntegerField(default=1, verbose_name="顶置级别", help_text="数值越小级别越高")
+    article = models.ForeignKey('Article', verbose_name="关联文章", on_delete=models.CASCADE)
+    created_time = models.DateTimeField(auto_now_add=True, verbose_name="设置顶置时间")
+    topped_expired_time = models.DateTimeField(verbose_name="顶置失效时间")
+
+    @classmethod
+    def get_top(cls):
+        from django.utils import timezone
+        queryset = cache.get('top_articles')
+        if not queryset:
+            # 按设置顶置时间　升序查询　在顶置有效期内的文章
+            queryset = cls.objects.filter(topped_expired_time__gt=timezone.now()).order_by('top_level')
+            cache.set('top_articles', queryset, 10 * 60)
+        return queryset
+
+    class Meta:
+        verbose_name_plural = "顶置文章"
+        ordering = ['-created_time']
+
+
+class Image(models.Model):
+    img = models.ImageField(upload_to="img/%Y%m%d/", default='avatar/default_avatar.jpg', blank=True, null=True, verbose_name="图片")

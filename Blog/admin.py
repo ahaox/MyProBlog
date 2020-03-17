@@ -3,10 +3,10 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.contrib.admin.models import LogEntry
 
-from .models import Category, Tag, Article
-from .adminforms import ArticleAdminForm
+from .models import Category, Tag, Article, ToppedArticles, Image
+from .adminforms import ArticleAdminForm, ImageAdminForm
 # from MyProBlog.custom_site import custom_site
-from MyProBlog.base_admin import BaseOwnerAdmin  # 抽象的基类
+from MyProBlog.base_admin import BaseOwnerAdmin, TopAdmin # 抽象的基类
 
 
 admin.site.site_header = "MyProBlog"
@@ -57,7 +57,7 @@ class ArticleAdmin(BaseOwnerAdmin):
     """文章管理类"""
     form = ArticleAdminForm
     # 文章列表展示的字段
-    list_display = ('title', 'category', 'status', 'owner', 'created_time', 'operator')
+    list_display = ('title', 'category', 'status', 'owner', 'created_time', 'pv', 'operator')
     list_display_links = []
     # 文章列表只显示当前用户创建的分类(过滤器)
     list_filter = (CategoryOwnerFilter, )
@@ -87,7 +87,7 @@ class ArticleAdmin(BaseOwnerAdmin):
         }),
         ('额外信息', {
             'classes': ('collapse', ),
-            'fields': ('tag', ),
+            'fields': ('tag', 'is_top'),
         })
     )
 
@@ -120,6 +120,19 @@ class ArticleAdmin(BaseOwnerAdmin):
 class LogEntryAdmin(admin.ModelAdmin):
     """日志记录"""
     list_display = ('object_repr', 'object_id', 'action_flag', 'user', 'change_message')
+
+
+@admin.register(ToppedArticles)
+class TopArticleAdmin(admin.ModelAdmin):
+    """顶置文章"""
+    list_display = ('top_level', 'article', 'created_time', 'topped_expired_time')
+
+
+@admin.register(Image)
+class ImgAdmin(admin.ModelAdmin):
+    form = ImageAdminForm
+    list_display = ('img',)
+    fields = ['img']
 
 
 

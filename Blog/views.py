@@ -1,24 +1,32 @@
 from datetime import date
+import logging
 
 from django.db.models import Q, F
-from django.shortcuts import get_object_or_404, HttpResponse
-from django.views.generic import ListView, DetailView, TemplateView
+from django.shortcuts import get_object_or_404, HttpResponse, render
+from django.views.generic import ListView, DetailView, TemplateView, View
 from django.core.cache import cache
 
-from .models import Tag, Article, Category
-from Config.models import SideBar
+from pure_pagination.mixins import PaginationMixin
+
+# from silk.profiling.profiler import silk_profile
+
+from .models import Tag, Article, Category, ToppedArticles
+from Config.models import SideBar, AboutBlogOwner
 # from appComment.forms import CommentForm
 # from appComment.models import Comment
 
 
 # Create your views here.
-class CommonViewMixin:
+class CommonViewMixin(PaginationMixin):
     def get_context_data(self, **kwargs):
         """获取需要渲染到模板中的数据"""
         context = super().get_context_data(**kwargs)
         context.update({
             # 侧边栏的数据，在index.html中的sidebar.content_html(侧边栏模板渲染)是封装在Model层的
             'sidebars': SideBar.get_all(),
+            'top_articles': ToppedArticles.get_top(),
+            'about_blog_owner': AboutBlogOwner.get_about_owner(),
+            'online_ips': list(cache.get('online_ips')),  # 从cache中获取在线ip
         })
         # 加入导航和普通分类
         context.update(Category.get_navs())
@@ -28,7 +36,7 @@ class CommonViewMixin:
 class IndexView(CommonViewMixin, ListView):
     """首页视图"""
     queryset = Article.latest_articles()  # 按id降序的所有文章列表
-    paginate_by = 10  # 设置每页展示的数据量
+    paginate_by = 2  # 设置每页展示的数据量
     template_name = 'blog/index.html'  # 设置渲染的模板
     # 为get_queryset()返回的model列表重新命名，默认是object_list，这里重新命名为article_list
     context_object_name = 'article_list'
@@ -132,19 +140,17 @@ class AuthorView(IndexView):
         return queryset.filter(owner_id=author_id)
 
 
-def getArticle(request):
-    import coreapi
+class Handler404(CommonViewMixin, TemplateView):
+    template_name = '404.html'
 
-    # Initialize a client & load the schema document
-    client = coreapi.Client()
-    schema = client.get("http://127.0.0.1:8000/api/docs/")
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context, status=404)
 
-    # Interact with the API endpoint
-    action = ["article", "read"]
-    params = {
-        "id": 1,
-    }
-    result = client.action(schema, action, params=params)
-    print(result)
-    return HttpResponse(request, "hello")
 
+class Handler50x(CommonViewMixin, TemplateView):
+    template_name = '50x.html'
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context, status=500)

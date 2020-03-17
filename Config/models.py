@@ -5,6 +5,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.loader import render_to_string
+from django.core.cache import cache
 
 
 # Create your models here.
@@ -89,12 +90,13 @@ class SideBar(models.Model):
             result = self.content
         elif self.display_type == self.DISPLAY_LATEST:  # 最新文章
             context = {
-                'articles': Article.latest_articles()[:15]  # 展示前15条数据
+                # with_related=False 侧边栏不需要Owner和Category
+                'articles': Article.latest_articles(with_related=False)[:15]  # 展示前15条数据
             }
             result = render_to_string('config/blocks/sidebar_articles.html', context)
         elif self.display_type == self.DISPLAY_HOT:  # 最热文章
             context = {
-                'articles': Article.hot_article()[:15]
+                'articles': Article.hot_article(with_related=False)[:15]
             }
             result = render_to_string('config/blocks/sidebar_articles.html', context)
         elif self.display_type == self.DISPLAY_COMMENT:  # 最近评论
@@ -103,4 +105,27 @@ class SideBar(models.Model):
             }
             result = render_to_string('config/blocks/sidebar_comments.html', context)
         return result
+
+
+class AboutBlogOwner(models.Model):
+    """关于博客"""
+    blog_owner = models.CharField(max_length=255, verbose_name="博主")
+    explain = models.CharField(max_length=300, verbose_name="说明")
+    email = models.EmailField(verbose_name="邮箱")
+    top_explain = models.CharField(max_length=255, verbose_name="顶部说明")
+
+    @classmethod
+    def get_about_owner(cls):
+        queryset = cache.get('about_blog')
+        if not queryset:
+            # 按设置顶置时间　升序查询　在顶置有效期内的文章
+            queryset = cls.objects.get()
+            cache.set('about_blog', queryset, 24 * 60)
+        return queryset
+
+    class Meta:
+        verbose_name_plural = "博客信息"
+
+
+
 
