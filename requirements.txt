@@ -9,7 +9,7 @@ distlib==0.3.0
 Django==2.2
 django-autocomplete-light==3.5.1
 django-ckeditor==5.9.0
-django-debug-toolbar==2.2
+django-debug-toolbar==2.2.1
 django-js-asset==1.2.2
 django-mdeditor==0.1.17
 django-redis==4.11.0
